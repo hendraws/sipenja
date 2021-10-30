@@ -1,5 +1,9 @@
-@extends('layouts.app')
-
+@extends('layouts.app_master')
+@section('title','Home')
+@section('add-css')
+@endsection
+@section('add-js')
+@endsection
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -13,7 +17,6 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
                     You are logged in!
                 </div>
             </div>
