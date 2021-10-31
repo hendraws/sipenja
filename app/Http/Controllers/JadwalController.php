@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Jadwal;
 use App\JadwalTanggalPelaksana;
+use App\Kelas;
+use App\LokasiTutorial;
+use App\RefJurusan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
@@ -180,8 +183,10 @@ class JadwalController extends Controller
 
     public function createJadwalTutorial($jadwalId)
     {
-    
-    	return view('admin.jadwal.create_jadwal_tutorial', compact('jadwalId'));
+    	$jurusan = RefJurusan::get();
+    	$kelas = Kelas::get();
+    	$lokasi = LokasiTutorial::get();
+    	return view('admin.jadwal.create_jadwal_tutorial', compact('jadwalId','jurusan','kelas','lokasi'));
     }
 
     public function storeJadwalTutorial(Request $request)

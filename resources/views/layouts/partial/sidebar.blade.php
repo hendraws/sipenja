@@ -60,13 +60,33 @@
 				</a>
 				<ul class="nav nav-treeview" style="display: none;">
 					<li class="nav-item">
+						<a href="{{ action('RefFakultasController@index') }}" class="nav-link">
+							<p>Fakultas</p>
+						</a>
+					</li>
+					<li class="nav-item">
 						<a href="{{ action('RefJurusanController@index') }}" class="nav-link">
 							<p>Jurusan</p>
 						</a>
 					</li>
 					<li class="nav-item">
-						<a href="{{ action('RefFakultasController@index') }}" class="nav-link">
-							<p>Fakultas</p>
+						<a href="{{ action('TutorController@index') }}" class="nav-link">
+							<p>Tutor</p>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ action('LokasiTutorialController@index') }}" class="nav-link">
+							<p>Lokasi Tutorial</p>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ action('MataKuliahController@index') }}" class="nav-link">
+							<p>Matakuliah</p>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ action('KelasController@index') }}" class="nav-link">
+							<p>Kelas</p>
 						</a>
 					</li>
 				</ul>

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\MataKuliah;
+use App\RefJurusan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class MataKuliahController extends Controller
@@ -15,7 +17,7 @@ class MataKuliahController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
+    	if ($request->ajax()) {
     		$data = MataKuliah::get();
     		return Datatables::of($data)
     		->addIndexColumn()
@@ -26,26 +28,21 @@ class MataKuliahController extends Controller
     		->addColumn('nama_mk', function ($row) {
     			$nama_mk = $row->nama_mk;
     			return $nama_mk;
-    		})     
-    		->addColumn('kode_ba', function ($row) {
-    			$kode_ba = $row->kode_ba;
-    			return $kode_ba;
-    		})          
-    		->addColumn('nama_ba', function ($row) {
-    			$nama_ba = $row->nama_ba;
-    			return $nama_ba;
-    		})     
+    		})     	
+    		->addColumn('jurusan', function ($row) {
+    			$jurusan = optional($row->getJurusan)->name;
+    			return $jurusan;
+    		})     	
     		->addColumn('action', function ($row) {
-    			// $action =  '<a class="btn btn-sm btn-warning modal-button" href="Javascript:void(0)"  data-target="ModalForm" data-url="'.action('KantorCabangController@edit',$row->id).'"  data-toggle="tooltip" data-placement="top" title="Edit" >Edit</a>';
-    			// $action = $action .  '<a class="btn btn-sm btn-danger modal-button ml-2" href="Javascript:void(0)"  data-target="ModalForm" data-url="'.action('KantorCabangController@delete',$row->id).'"  data-toggle="tooltip" data-placement="top" title="Edit" >Hapus</a>';
-
-    			// return $action;
+    			$action =  '<a class="btn btn-sm btn-warning modal-button" href="Javascript:void(0)"  data-target="ModalForm" data-url="'.action('MataKuliahController@edit',$row).'"  data-toggle="tooltip" data-placement="top" title="Edit"  data-mode="lg">Edit</a>';
+    			$action = $action.  '<a class="btn btn-sm btn-danger modal-button mx-2" href="Javascript:void(0)"  data-target="ModalForm" data-url="'.action('MataKuliahController@delete',$row).'"  data-toggle="tooltip" data-placement="top" title="Hapus" >Hapus</a>';
+    			return $action;
     		})
     		->rawColumns(['action'])
     		->make(true);
     	}
 
-    	return view('admin.kurikulum.index');
+    	return view('admin.matakuliah.index');
     }
 
     /**
@@ -55,7 +52,8 @@ class MataKuliahController extends Controller
      */
     public function create()
     {
-        //
+    	$jurusan = RefJurusan::get();
+    	return view('admin.matakuliah.create', compact('jurusan'));
     }
 
     /**
@@ -66,7 +64,31 @@ class MataKuliahController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+    	$matakuliah = $request->validate([
+    		'jurusan_id' => 'required',
+    		'nama_mk' => 'required',
+    		'kode_mk' => 'required',
+    		'semester' => 'required',
+    	]);
+
+    	DB::beginTransaction();
+    	try {
+    		$matakuliah['created_by'] = auth()->user()->nik_npm;
+    		MataKuliah::create($matakuliah);
+    	} catch (\Exception $e) {
+    		DB::rollback();
+    		toastr()->error($e->getMessage(), 'Error');
+    		return back();
+    	}catch (\Throwable $e) {
+    		DB::rollback();
+    		toastr()->error($e->getMessage(), 'Error');
+    		throw $e;
+    	}
+
+    	DB::commit();
+    	toastr()->success('Data telah ditambahkan', 'Berhasil');
+    	return redirect(action('MataKuliahController@index'));
     }
 
     /**
@@ -86,9 +108,10 @@ class MataKuliahController extends Controller
      * @param  \App\MataKuliah  $mataKuliah
      * @return \Illuminate\Http\Response
      */
-    public function edit(MataKuliah $mataKuliah)
+    public function edit(MataKuliah $matakuliah)
     {
-        //
+    	$jurusan = RefJurusan::get();
+    	return view('admin.matakuliah.edit_modal', compact('matakuliah','jurusan'));
     }
 
     /**
@@ -98,9 +121,33 @@ class MataKuliahController extends Controller
      * @param  \App\MataKuliah  $mataKuliah
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, MataKuliah $mataKuliah)
+    public function update(Request $request, MataKuliah $matakuliah)
     {
-        //
+
+    	$mk = $request->validate([
+    		'jurusan_id' => 'required',
+    		'nama_mk' => 'required',
+    		'kode_mk' => 'required',
+    		'semester' => 'required',
+    	]);
+
+    	DB::beginTransaction();
+    	try {
+    		$mk['updated_by'] = auth()->user()->nik_npm;
+    		$matakuliah->update($mk);
+    	} catch (\Exception $e) {
+    		DB::rollback();
+    		toastr()->error($e->getMessage(), 'Error');
+    		return back();
+    	}catch (\Throwable $e) {
+    		DB::rollback();
+    		toastr()->error($e->getMessage(), 'Error');
+    		throw $e;
+    	}
+
+    	DB::commit();
+    	toastr()->success('Data telah diubah', 'Berhasil');
+    	return redirect(action('MataKuliahController@index'));
     }
 
     /**
@@ -109,8 +156,15 @@ class MataKuliahController extends Controller
      * @param  \App\MataKuliah  $mataKuliah
      * @return \Illuminate\Http\Response
      */
-    public function destroy(MataKuliah $mataKuliah)
+    public function destroy(MataKuliah $matakuliah)
     {
-        //
+        $matakuliah->delete();
+    	toastr()->success('Data telah hapus', 'Berhasil');
+    	return back();
+    }
+
+    public function delete(MataKuliah $matakuliah)
+    {
+    	return view('admin.matakuliah.delete', compact('matakuliah'));   
     }
 }

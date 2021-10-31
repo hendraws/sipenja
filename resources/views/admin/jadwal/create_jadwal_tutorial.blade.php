@@ -27,14 +27,16 @@
 	<div class="card-header">
 	</div>
 	<div class="card-body">
-		<form action="{{ action('JadwalController@storeJadwalTutorial') }}" method="POST">
+		<form action="Javascript:void(0)" method="POST">
 			@csrf
 			<div class="form-group row">
 				<label for="nomor" class="col-sm-2 col-form-label">Jurusan</label>
 				<div class="col-md-10">
 					<select class="form-control" name="tahun_ajaran" required>
 						<option disabled selected>Pilih Jurusan</option>
-						<option value="1" >PAI</option>
+						@foreach($jurusan as $val)
+						<option value="{{ $val->id }}" >{{ $val->name }}</option>
+						@endforeach
 					</select>
 				</div>
 			</div>
@@ -43,7 +45,9 @@
 				<div class="col-md-10">
 					<select class="form-control" name="tahun_ajaran" required>
 						<option disabled selected>Pilih Kelas</option>
-						<option value="2021/2022">2021/2022</option>
+						@foreach($kelas as $val)
+						<option value="{{ $val->id }}">{{ $val->nama }}</option>
+						@endforeach
 					</select>
 				</div>
 			</div>
@@ -52,7 +56,9 @@
 				<div class="col-md-10">
 					<select class="form-control" name="tahun_ajaran" required>
 						<option disabled selected>Pilih Kelompok Tutorial</option>
-						<option value="2021/2022" >2021/2022</option>
+							@foreach($kelas as $val)
+						<option value="{{ $val->id }}" >{{ $val->lokasi }}</option>
+							@endforeach
 					</select>
 				</div>
 			</div>
@@ -73,7 +79,7 @@
 					<tr>
 						<th scope="col" width="20%">Hari/Jam</th>
 						<th scope="col">MataKuliah</th>
-{{-- 						<th scope="col" >Master Kelas</th> --}}
+						{{-- 						<th scope="col" >Master Kelas</th> --}}
 						<th scope="col" width="5%">Jumlah Peserta</th>
 						<th scope="col">Tutor</th>
 					</tr>
