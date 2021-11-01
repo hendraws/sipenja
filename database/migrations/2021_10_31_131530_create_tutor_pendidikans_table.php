@@ -13,21 +13,21 @@ class CreateTutorPendidikansTable extends Migration
      */
     public function up()
     {
-        Schema::create('tutor_pendidikans', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('tutor_id');
-            $table->string('bidang_studi');
-            $table->string('kode_pt');
-            $table->string('nama_pt')->comment('perguruan tinggi');
-            $table->string('akreditasi');
-            $table->string('kode_pendidikan_akhir');
-            $table->string('nama_pendidikan_akhir');
-            $table->string('tahun_lulus');
-            $table->string('gelar');
-            $table->string('created_by');
-            $table->string('updated_by');
-            $table->timestamps();
-        });
+    	Schema::create('tutor_pendidikans', function (Blueprint $table) {
+    		$table->bigIncrements('id');
+    		$table->bigInteger('tutor_id')->nullable();
+    		$table->string('bidang_studi')->nullable();
+    		$table->string('kode_pt')->nullable();
+    		$table->string('nama_pt')->comment('perguruan tinggi')->nullable();
+    		$table->string('akreditasi')->nullable();
+    		$table->string('kode_pendidikan_akhir')->nullable();
+    		$table->string('nama_pendidikan_akhir')->nullable();
+    		$table->string('tahun_lulus')->nullable();
+    		$table->string('gelar')->nullable();
+    		$table->string('created_by')->nullable();
+    		$table->string('updated_by')->nullable();
+    		$table->timestamps();
+    	});
     }
 
     /**
@@ -37,6 +37,6 @@ class CreateTutorPendidikansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tutor_pendidikans');
+    	Schema::dropIfExists('tutor_pendidikans');
     }
 }

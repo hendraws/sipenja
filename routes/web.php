@@ -39,6 +39,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('master/kelas/{kela}/delete', 'KelasController@delete');
 	Route::resource('master/tutor', 'TutorController');
 	Route::get('master/tutor/{tutor}/delete', 'TutorController@delete');
+	Route::resource('master/tutor-pendidikan', 'TutorPendidikanController');
+	Route::get('master/tutor-pendidikan/{tutor_pendidikan}/delete', 'TutorPendidikanController@delete');
 });
 Route::view('login-page','login');
 Route::view('master','layouts.app_master');

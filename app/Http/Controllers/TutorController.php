@@ -50,7 +50,7 @@ class TutorController extends Controller
     			return $status;
     		})   	
     		->addColumn('action', function ($row) {
-    			$action =  '<a class="btn btn-xs btn-info" href="Javascript:void(0)"  data-target="ModalForm" data-url="'.action('LokasiTutorialController@edit',$row).'"  data-toggle="tooltip" data-placement="top" title="Pendidikan Tutor">Pendidikan Tutor</a>';
+    			$action =  '<a class="btn btn-xs btn-info" href="'.action('TutorController@show',$row).'"  data-toggle="tooltip" data-placement="top" title="Pendidikan Tutor">Pendidikan Tutor</a>';
     			$action = $action.  '<a class="btn btn-xs btn-warning mx-2" href="'.action('TutorController@edit',$row).'"  data-toggle="tooltip" data-placement="top" title="Edit" >Edit</a>';
     			$action = $action.  '<a class="btn btn-xs btn-danger modal-button" href="Javascript:void(0)"  data-target="ModalForm" data-url="'.action('TutorController@delete',$row).'"  data-toggle="tooltip" data-placement="top" title="Hapus" >Hapus</a>';
     			return $action;
@@ -118,7 +118,7 @@ class TutorController extends Controller
      */
     public function show(Tutor $tutor)
     {
-        //
+        return view('admin.tutor.detail', compact('tutor'));
     }
 
     /**

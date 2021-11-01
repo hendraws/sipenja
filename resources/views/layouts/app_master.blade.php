@@ -30,7 +30,7 @@
 	<script src="{{ asset('js/print-this.js')}}"></script>
 
 </head>
-<body class="hold-transition sidebar-mini @yield('body')">
+<body class="hold-transition sidebar-mini @yield('body') layout-fixed layout-navbar-fixed layout-footer-fixed">
 	<div class="wrapper">
 
 		<!-- Navbar -->
