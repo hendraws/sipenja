@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Jadwal;
 use App\JadwalTanggalPelaksana;
+use App\JadwalTutorial;
+use App\JadwalTutorialDetail;
 use App\Kelas;
 use App\LokasiTutorial;
+use App\MataKuliah;
 use App\RefJurusan;
+use App\Tutor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
@@ -108,7 +112,7 @@ class JadwalController extends Controller
      */
     public function show(Jadwal $jadwal)
     {
-        
+
     	return view('admin.jadwal.detail', compact('jadwal'));
     }
 
@@ -149,7 +153,7 @@ class JadwalController extends Controller
 
     public function createTanggal($jadwalId)
     {
-    
+
     	return view('admin.jadwal.create_tanggal_modal', compact('jadwalId'));
     }
 
@@ -181,27 +185,64 @@ class JadwalController extends Controller
     	return redirect(action('JadwalController@show', $request->jadwal_id));
     }
 
-    public function createJadwalTutorial($jadwalId)
+    public function createJadwalTutorial(Request $request, $jadwalId)
     {
+    	if ($request->ajax()) {
+    		if($request->has('cek')){
+    			// dd($request->tutor_id);
+    			$result = [];
+    			$cekTutor = JadwalTutorialDetail::where('jadwal_id', $jadwalId)->where('number', $request->number)->where('tutor_id', $request->tutor_id)->first();
+    			if(!empty($cekTutor)){
+    				$result['code'] = '200';
+    				$result['number'] = $request->number;
+    			}
+    			return response()->json($result);
+
+    		}
+    	}
+    	$jadwalTutor = JadwalTutorial::where('jadwal_id', $jadwalId)->get();
+    	// dd($jadwalTutor->pluck('kelas_id', 'kelas_id'));
     	$jurusan = RefJurusan::get();
-    	$kelas = Kelas::get();
+    	$kelas = Kelas::whereNotIn('id', $jadwalTutor->pluck('kelas_id', 'kelas_id'))->get();
     	$lokasi = LokasiTutorial::get();
-    	return view('admin.jadwal.create_jadwal_tutorial', compact('jadwalId','jurusan','kelas','lokasi'));
+    	$matakuliah = MataKuliah::get();
+    	$tutor = Tutor::get();
+    	return view('admin.jadwal.create_jadwal_tutorial', compact('jadwalId','jurusan','kelas','lokasi','matakuliah','tutor'));
     }
 
     public function storeJadwalTutorial(Request $request)
     {
-    	dd($request);
+    	// dd($request);
     	$jadwal = $request->validate([
-    		'tanggal_selesai' => 'required',
-    		'tanggal_mulai' => 'required',
     		'jadwal_id' => 'required',
+    		'jurusan_id' => 'required',
+    		'kelas_id' => 'required',
+    		'kelompok_id' => 'required',
+    		'link' => 'required',
+    		'keterangan' => 'required'
     	]);
-
     	DB::beginTransaction();
     	try {
     		$jadwal['created_by'] = auth()->user()->nik_npm;
-    		JadwalTanggalPelaksana::create($jadwal);
+    		$jadwal = JadwalTutorial::create($jadwal);
+    		$waktu = $request->waktu;
+    		$matakuliah = $request->matakuliah;
+    		$jumlah_peserta = $request->jumlah_peserta;
+    		$tutor = $request->tutor;
+
+    		for ($i=1; $i <= count($tutor) ; $i++) { 
+    			JadwalTutorialDetail::create([
+    				'jadwal_id' => $request->jadwal_id,
+    				'jadwal_tutorial_id' => $jadwal->id,
+    				'number' => $i,
+    				'waktu'=> $waktu[$i],
+    				'matakuliah_id' => $matakuliah[$i],
+    				'jumlah_peserta'=> $jumlah_peserta[$i],
+    				'tutor_id' => $tutor[$i],
+    				'created_by' => auth()->user()->nik_npm,
+    			]);
+    		}
+    		// dd($jadwal, $request->all(),$waktu[2]);
     	} catch (\Exception $e) {
     		DB::rollback();
     		toastr()->error($e->getMessage(), 'Error');
@@ -215,5 +256,13 @@ class JadwalController extends Controller
     	DB::commit();
     	toastr()->success('Data telah ditambahkan', 'Berhasil');
     	return redirect(action('JadwalController@show', $request->jadwal_id));
+    }
+
+    public function destoryJadwalTutorial($id){
+    	$jadwalTutorial = JadwalTutorialDetail::where('jadwal_tutorial_id',$id)->delete();
+
+    	$result['code'] = '200';
+    	return response()->json($result);
+
     }
 }

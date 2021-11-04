@@ -23,8 +23,11 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('/jadwal','JadwalController');
 	Route::get('/jadwal/{id}/create-tanggal','JadwalController@createTanggal');
 	Route::post('/jadwal/store-tanggal','JadwalController@storeTanggal');
-	Route::get('/jadwal/{id}/create-jadwal-tutorial','JadwalController@createJadwalTutorial');
-	Route::post('/jadwal/store-jadwal-tutorial','JadwalController@storeJadwalTutorial');
+	Route::get('/jadwal/{id}/create-jadwal-tutorial','JadwalTutorialDetailController@create');
+	Route::post('/jadwal/store-jadwal-tutorial','JadwalTutorialDetailController@store');
+	Route::delete('/jadwal/{id}/delete-jadwal-tutorial','JadwalTutorialDetailController@destroy');
+	Route::get('/jadwal/{jadwalid}/{id}/edit-jadwal-tutorial','JadwalTutorialDetailController@edit');
+	Route::patch('/jadwal/{id}/update-jadwal-tutorial','JadwalTutorialDetailController@update');
 
 	// data master
 	Route::resource('master/jurusan', 'RefJurusanController');

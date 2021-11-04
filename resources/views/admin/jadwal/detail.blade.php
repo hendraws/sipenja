@@ -16,6 +16,44 @@
 			}
 		});
 
+		$(document).on('click','.hapus',function(e){
+			e.preventDefault();
+			var id = $(this).data('id');
+			var url = '{{ action('JadwalTutorialDetailController@destroy',':id') }}';
+			url = url.replace(':id',id);
+			console.log(url);
+			Swal.fire({
+				title: 'Apakah Anda Yakin ?',
+				text: "Data akan terhapus tidak dapat dikembalikan lagi !",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+				if (result.value == true) {
+					$.ajax({
+						type:'DELETE',
+						url:url,
+						data:{
+							"_token": "{{ csrf_token() }}",
+						},
+						success:function(data) {
+							console.log(data, id);
+							if (data.code == '200'){
+								Swal.fire(
+									'Deleted!',
+									'Your file has been deleted.',
+									'success'
+									);
+								$("."+id+"").remove(); 
+							}
+						}
+					});
+					
+				}
+			})
+		})
 	});
 </script>
 @endsection
@@ -38,16 +76,15 @@
 	<div class="card-body">
 		<div class="row mb-2">
 			<div class="col-6"><h5>Pengaturan Jadwal Tutorial</h5></div>
-			<div class="col-6"><a href="{{ action('JadwalController@createJadwalTutorial', $jadwal->id) }}" class="btn btn-primary btn-sm float-right">Tambah Jadwal Tutorial</a></div>
+			<div class="col-6"><a href="{{ action('JadwalTutorialDetailController@create', $jadwal->id) }}" class="btn btn-primary btn-sm float-right">Tambah Jadwal Tutorial</a></div>
 		</div>
-		<div class="table-responsive" style="height: 300px; font-size: 13px;">
+		<div class="table-responsive" style="height: 350px; font-size: 13px;">
 			<table class="table table-bordered table-sm table-head-fixed">
 				<thead>
 					<tr>
 						<th scope="col">Hari/Jam</th>
 						<th scope="col">Kode MK</th>
 						<th scope="col">Nama MK</th>
-						<th scope="col">Kelas</th>
 						<th scope="col">Kelas</th>
 						<th scope="col">Jumlah Peserta</th>
 						<th scope="col">ID Tutor</th>
@@ -56,139 +93,50 @@
 						<th scope="col">Jurusan/Kelas</th>
 						<th scope="col">Kelompok Tutorial</th>
 						<th scope="col">Link Kelas Tuweb</th>
-						<th scope="col">Keterangan Tambahan</th>
+						<th scope="col">Keterangan</th>
+						<th scope="col">Aksi</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>Sabtu/13.00-15.00</td>
-						<td>MKDU4109</td>
-						<td>Ilmu Sosial & Budaya Dasar</td>
-						<td>MKDU4109.150001</td>
-						<td>20</td>
-						<td>15002042</td>
-						<td>Pebri Yanasari, S.Pd.I., M.A</td>
-						<td>0813 74313990</td>
-						<td>Adm.Negara Smt.01.A</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>ttps://sl.ut.ac.id/Kelas-AA</td>
-						<td></td>
-					</tr><tr>
-						<td>Sabtu/13.00-15.00</td>
-						<td>MKDU4109</td>
-						<td>Ilmu Sosial & Budaya Dasar</td>
-						<td>MKDU4109.150001</td>
-						<td>20</td>
-						<td>15002042</td>
-						<td>Pebri Yanasari, S.Pd.I., M.A</td>
-						<td>0813 74313990</td>
-						<td>Adm.Negara Smt.01.A</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>ttps://sl.ut.ac.id/Kelas-AA</td>
-						<td></td>
-					</tr><tr>
-						<td>Sabtu/13.00-15.00</td>
-						<td>MKDU4109</td>
-						<td>Ilmu Sosial & Budaya Dasar</td>
-						<td>MKDU4109.150001</td>
-						<td>20</td>
-						<td>15002042</td>
-						<td>Pebri Yanasari, S.Pd.I., M.A</td>
-						<td>0813 74313990</td>
-						<td>Adm.Negara Smt.01.A</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>ttps://sl.ut.ac.id/Kelas-AA</td>
-						<td></td>
+					@foreach($jadwal->getJadwalTutorial as $key => $value)
+
+					@foreach($value->getTutorialDetail as $k => $v)
+					@if($loop->index == 0)
+					<tr class="{{ $value->id }}">
+						<td>{{ $v->waktu }}</td>
+						<td>{{ optional($v->getMatakuliah)->kode_mk }}</td>
+						<td>{{ optional($v->getMatakuliah)->nama_mk }}</td>
+						<td>{{ !empty(optional($v->getMatakuliah)->kode_mk) ? optional($v->getMatakuliah)->kode_mk .'.'.$value->kelas_id : '' }}</td>
+						<td>{{ $v->jumlah_peserta }}</td>
+						<td>{{ $v->tutor_id }}</td>
+						<td>{{ optional($v->getTutor)->nama }}</td>
+						<td>{{ optional($v->getTutor)->telepon }}</td>
+						<td rowspan="7" class="align-middle">{{ optional($value->getJurusan)->name }} / {{ optional($value->getKelas)->nama }}</td>
+						<td rowspan="7" class="align-middle">{{ optional($value->getKelompok)->lokasi }}</td>
+						<td rowspan="7" class="align-middle"><a href="{{ $value->link }}">{{ $value->link }}</a></td>
+						<td rowspan="7" class="align-middle">{{ $value->keterangan }}</td>
+						<td rowspan="7" class="align-middle">
+							<a href="{{ action('JadwalTutorialDetailController@edit', [$jadwal->id, $value->id]) }}" class="btn btn-warning btn-xs mb-1">Edit</a>
+							<button type="button" class="btn btn-danger btn-xs hapus" data-id="{{ $value->id }}">Hapus</button>
+						</td>
 					</tr>
-					<tr><td colspan="13" class="bg-lightblue"></td></tr>
-					<tr>
-						<td>Sabtu/13.00-15.00</td>
-						<td>MKDU4109</td>
-						<td>Ilmu Sosial & Budaya Dasar</td>
-						<td>MKDU4109.150001</td>
-						<td>20</td>
-						<td>15002042</td>
-						<td>Pebri Yanasari, S.Pd.I., M.A</td>
-						<td>0813 74313990</td>
-						<td>Adm.Negara Smt.01.A</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>ttps://sl.ut.ac.id/Kelas-AA</td>
-						<td></td>
-					</tr><tr>
-						<td>Sabtu/13.00-15.00</td>
-						<td>MKDU4109</td>
-						<td>Ilmu Sosial & Budaya Dasar</td>
-						<td>MKDU4109.150001</td>
-						<td>20</td>
-						<td>15002042</td>
-						<td>Pebri Yanasari, S.Pd.I., M.A</td>
-						<td>0813 74313990</td>
-						<td>Adm.Negara Smt.01.A</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>ttps://sl.ut.ac.id/Kelas-AA</td>
-						<td></td>
-					</tr><tr>
-						<td>Sabtu/13.00-15.00</td>
-						<td>MKDU4109</td>
-						<td>Ilmu Sosial & Budaya Dasar</td>
-						<td>MKDU4109.150001</td>
-						<td>20</td>
-						<td>15002042</td>
-						<td>Pebri Yanasari, S.Pd.I., M.A</td>
-						<td>0813 74313990</td>
-						<td>Adm.Negara Smt.01.A</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>ttps://sl.ut.ac.id/Kelas-AA</td>
-						<td></td>
-					</tr><tr>
-						<td>Sabtu/13.00-15.00</td>
-						<td>MKDU4109</td>
-						<td>Ilmu Sosial & Budaya Dasar</td>
-						<td>MKDU4109.150001</td>
-						<td>20</td>
-						<td>15002042</td>
-						<td>Pebri Yanasari, S.Pd.I., M.A</td>
-						<td>0813 74313990</td>
-						<td>Adm.Negara Smt.01.A</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>ttps://sl.ut.ac.id/Kelas-AA</td>
-						<td></td>
-					</tr><tr>
-						<td>Sabtu/13.00-15.00</td>
-						<td>MKDU4109</td>
-						<td>Ilmu Sosial & Budaya Dasar</td>
-						<td>MKDU4109.150001</td>
-						<td>20</td>
-						<td>15002042</td>
-						<td>Pebri Yanasari, S.Pd.I., M.A</td>
-						<td>0813 74313990</td>
-						<td>Adm.Negara Smt.01.A</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>ttps://sl.ut.ac.id/Kelas-AA</td>
-						<td></td>
-					</tr><tr>
-						<td>Sabtu/13.00-15.00</td>
-						<td>MKDU4109</td>
-						<td>Ilmu Sosial & Budaya Dasar</td>
-						<td>MKDU4109.150001</td>
-						<td>20</td>
-						<td>15002042</td>
-						<td>Pebri Yanasari, S.Pd.I., M.A</td>
-						<td>0813 74313990</td>
-						<td>Adm.Negara Smt.01.A</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>SMPN 3 Pk.Pinang</td>
-						<td>ttps://sl.ut.ac.id/Kelas-AA</td>
-						<td></td>
+					@else
+					<tr class="{{ $value->id }}">
+						<td>{{ $v->waktu }}</td>
+						<td>{{ optional($v->getMatakuliah)->kode_mk }}</td>
+						<td>{{ optional($v->getMatakuliah)->nama_mk }}</td>
+						<td>{{ !empty(optional($v->getMatakuliah)->kode_mk) ? optional($v->getMatakuliah)->kode_mk .'.'.$value->kelas_id : '' }}</td>
+						<td>{{ $v->jumlah_peserta }}</td>
+						<td>{{ $v->tutor_id }}</td>
+						<td>{{ optional($v->getTutor)->nama }}</td>
+						<td>{{ optional($v->getTutor)->telepon }}</td>
 					</tr>
+					@endif
+					
+					@endforeach
+					<tr class="{{ $value->id }}"><td colspan="13" class="bg-lightblue"></td></tr>
+					@endforeach
+					
 				</tbody>
 			</table>
 		</div>

@@ -18,7 +18,9 @@
 		});
 
 		$('.select').select2({
-			theme: 'bootstrap4'
+			theme: 'bootstrap4',
+			allowClear: true,
+			placeholder: ""
 		});
 
 		$('.tutor').on("select2:select", function(e) {
@@ -62,7 +64,7 @@
 	<div class="card-header">
 	</div>
 	<div class="card-body">
-		<form action="{{ action('JadwalController@storeJadwalTutorial') }}" method="POST">
+		<form action="{{ action('JadwalTutorialDetailController@store') }}" method="POST">
 			@csrf
 			<div class="form-group row">
 				<label for="jurusan_id" class="col-sm-2 col-form-label">Jurusan</label>

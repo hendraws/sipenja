@@ -17,10 +17,13 @@ class CreateJadwalTutorialsTable extends Migration
     		Schema::create('jadwal_tutorials', function (Blueprint $table) {
     			$table->bigIncrements('id');
     			$table->bigInteger('jadwal_id');
-    			$table->integer('jurusan_id');
-    			$table->string('kode_mk');
-    			$table->integer('kelompok_id');
-            // $table->integer('kelompok_id');
+    			$table->integer('jurusan_id')->nullable();
+    			$table->integer('kelas_id')->nullable();
+    			$table->integer('kelompok_id')->nullable();
+    			$table->string('link')->nullable();
+    			$table->string('keterangan')->nullable();
+    			$table->bigInteger('created_by')->nullable();
+    			$table->bigInteger('updated_by')->nullable();
     			$table->timestamps();
     		});
     	}
