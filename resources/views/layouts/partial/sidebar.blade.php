@@ -50,6 +50,16 @@
 					</p>
 				</a>
 			</li>
+			<li class="nav-item">
+				<a href="{{ action('MahasiswaController@index') }}" class="nav-link">
+					<i class="nav-icon fa fa-user"></i>
+					<p>
+						Mahasiswa
+						{{-- <span class="right badge badge-danger">New</span> --}}
+					</p>
+				</a>
+			</li>
+			
 			<li class="nav-item has-treeview">
 				<a href="#" class="nav-link">
 					<i class="nav-icon fas fa-database"></i>
@@ -88,7 +98,12 @@
 						<a href="{{ action('KelasController@index') }}" class="nav-link">
 							<p>Kelas</p>
 						</a>
-					</li>
+					</li>			
+					<li class="nav-item">
+						<a href="{{ action('KeteranganLayananController@index') }}" class="nav-link">
+							<p>Keterangan Layanan</p>
+						</a>
+					</li>				
 				</ul>
 			</li>
 		</ul>

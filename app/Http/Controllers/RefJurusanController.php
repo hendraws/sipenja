@@ -18,7 +18,7 @@ class RefJurusanController extends Controller
     public function index(Request $request)
     {
     	if ($request->ajax()) {
-    		$data = RefJurusan::query();
+    		$data = RefJurusan::get();
 
     		return Datatables::of($data)
     		->addIndexColumn()

@@ -10,5 +10,9 @@ class Tutor extends Model
 
     public function Pendidikan(){
     	return $this->hasMany(TutorPendidikan::class, 'tutor_id', 'id');
+    }    
+
+    public function Evaluasi(){
+    	return $this->belongsTo(TutorEvaluasi::class,  'id','tutor_id');
     }
 }

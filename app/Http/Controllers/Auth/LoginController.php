@@ -38,28 +38,38 @@ class LoginController extends Controller
     {
     	$this->middleware('guest')->except('logout');
     }
+    
+    protected function authenticated($request, $user){
+    	if($user->hasRole('admin')){
+    		return redirect('/home');
+    	} else {
+    		return redirect('/');
+    	}
+    }
 
     protected function credentials(Request $request)
     {
-        if(is_numeric($request->get('email'))){
-            return [
-                'nik_npm'=>$request->get('email'),
-                'password'=>$request->get('password')
-            ];
-        }
-        elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
-            return [
-                'email' => $request->get('email'),
-                'password'=>$request->get('password')
-            ];
-        }
-        else {
-            return [
-                'username' => $request->get('email'),
-                'password' => $request->get('password')
-            ];
-        }
+    	if(is_numeric($request->get('email'))){
+    		return [
+    			'nik_npm'=>$request->get('email'),
+    			'password'=>$request->get('password')
+    		];
+    	}
+    	elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
+    		return [
+    			'email' => $request->get('email'),
+    			'password'=>$request->get('password')
+    		];
+    	}
+    	else {
+    		return [
+    			'username' => $request->get('email'),
+    			'password' => $request->get('password')
+    		];
+    	}
     }
+
+
 
 
 }

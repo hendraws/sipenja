@@ -17,7 +17,7 @@ class RefFakultasController extends Controller
     public function index(Request $request)
     {
     	if ($request->ajax()) {
-    		$data = RefFakultas::query();
+    		$data = RefFakultas::get();
 
     		return Datatables::of($data)
     		->addIndexColumn()
