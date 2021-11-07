@@ -20,8 +20,6 @@ Auth::routes();
 // dibawah ini dibutuhkan akses autitentifikasi
 Route::group(['middleware' => 'auth'], function () { 
 
-	Route::get('/home', 'HomeController@index')->name('home');
-
 	Route::group(['middleware' => ['role:admin']], function () {
 		Route::resource('/jadwal','JadwalController');
 		Route::get('/jadwal/{id}/create-tanggal','JadwalController@createTanggal');
@@ -53,8 +51,8 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('master/keterangan-layanan', 'KeteranganLayananController');
 	});
 
+	Route::get('/', 'HomeController@index');
 	Route::group(['middleware' => ['role:mahasiswa']], function () {
-		Route::get('/', 'HomeController@mahasiswaIndex');
 		Route::post('/store/jadwal-mahasiswa', 'MahasiswaController@storeJadwalMhs');
 		Route::get('jadwal-tutorial-mahasiswa', 'MahasiswaController@jadwal');
 		Route::get('jadwal-tutorial-mahasiswa/{mahasiswa}/edit', 'MahasiswaController@editJadwal');
