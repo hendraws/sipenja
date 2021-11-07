@@ -229,7 +229,7 @@ class MahasiswaController extends Controller
     	DB::beginTransaction();
     	try {
     		$last_id = MahasiswaJadwal::latest()->first();
-    		$last_id = $last_id  ? $last_id + 1 :  '1';
+    		$last_id = $last_id  ? $last_id->id + 1 :  '1';
     		$nim = auth()->user()->nik_npm;
     		$mhsJadwal = MahasiswaJadwal::create([
     			'kode_order' => $nim.'-'.date('dmY').'-'.$last_id, 
