@@ -35,6 +35,8 @@
 			</thead>
 			<tbody>
 				@foreach($mahasiswa->getMahasiswaJadwalDetail as $key => $val)
+				<tr>
+					
 				<td>{{ optional($val->getJadwalDetail)->waktu }}</td>
 				<td>
 					<select class="form-control select" name="jadwal_tutorial_detail_id[{{ $val->id }}]" data-number="{{ $val->number }}" required>
@@ -42,6 +44,7 @@
 						<option value="{{ optional($val->getJadwalDetail)->id }}" selected>{{optional(optional($val->getJadwalDetail)->getMatakuliah)->kode_mk .' - '. optional(optional($val->getJadwalDetail)->getMatakuliah)->nama_mk ." || ". optional(optional($val->getJadwalDetail)->getTutor)->nama }}</option>
 					</select>
 				</td>
+				</tr>
 				@endforeach
 			</tbody>
 		</table>

@@ -25,8 +25,11 @@
 			</thead>
 			<tbody>
 				@foreach($mahasiswa->getMahasiswaJadwalDetail as $key => $val)
+				<tr>
+					
 				<td>{{ optional($val->getJadwalDetail)->waktu }}</td>
 				<td>{{ optional(optional($val->getJadwalDetail)->getMatakuliah)->nama_mk }}</td>
+				</tr>
 				@endforeach
 			</tbody>
 		</table>
