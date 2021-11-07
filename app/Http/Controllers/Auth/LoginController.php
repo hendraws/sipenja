@@ -27,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -39,14 +39,6 @@ class LoginController extends Controller
     	$this->middleware('guest')->except('logout');
     }
     
-    protected function authenticated($request, $user){
-    	if($user->hasRole('admin')){
-    		return redirect('/home');
-    	} else {
-    		return redirect('/');
-    	}
-    }
-
     protected function credentials(Request $request)
     {
     	if(is_numeric($request->get('email'))){
