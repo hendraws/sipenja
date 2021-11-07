@@ -49,14 +49,15 @@ class HomeController extends Controller
 
     			return response()->json($matakuliah);
     		}
-    		$lokasi =[];
+    		$lokasi = $cek = [];
     		if(!empty($jadwal->getJadwalTutorial)){
     			$lokasi = $jadwal->getJadwalTutorial->mapWithKeys(function ($item, $key) {
     				return  [$item->kelompok_id => $item->getKelompok->lokasi];
     			});
+	    		
+	    		$cek = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)->pluck('number')->toArray();
     		}
 
-    		$cek = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)->pluck('number')->toArray();
 
     	// $lokasi = $jadwal->getJadwalTutorial;  
     		return view('mahasiswa.index', compact('mahasiswa','jadwal','mahasiswaJadwal','lokasi', 'cek'));
