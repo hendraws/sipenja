@@ -1,16 +1,17 @@
-<form action="{{ action('JadwalController@store') }}" method="POST">
+<form action="{{ action('JadwalController@update', $jadwal) }}" method="POST">
 	<div class="modal-header">
-		<h5 class="modal-title" id="exampleModalLabel">Jadwal Baru</h5>
+		<h5 class="modal-title" id="exampleModalLabel">Edit Jadwal</h5>
 		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			<span aria-hidden="true">&times;</span>
 		</button>
 	</div>
 	<div class="modal-body">
 		@csrf
+		@method('PUT')
 		<div class="form-group row">
 			<label for="nomor" class="col-sm-4 col-form-label">Nomor</label>
 			<div class="col-md-8">
-				<input  required type="text" id="nomor" class="form-control hitung" name="nomor">
+				<input  required type="text" id="nomor" class="form-control hitung" name="nomor" value="{{ $jadwal->nomor }}">
 			</div>
 		</div>
 		<div class="form-group row">
@@ -18,33 +19,33 @@
 			<div class="col-md-8">
 				<select class="form-control" name="tahun_ajaran" required>
 					<option disabled selected>Pilih Tahun Ajaran</option>
-					<option value="2021/2022" >2021/2022</option>
+					<option value="2021/2022" {{ $jadwal->tahun_ajaran == '2021/2022' ? 'selected' : '' }}>2021/2022</option>
 				</select>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label for="nama" class="col-sm-4 col-form-label">Tanggal Mulai</label>
 			<div class="col-sm-8">
-				<input required type="text" class="form-control tanggal" value="" name="tanggal_mulai" autocomplete="off">
+				<input required type="text" class="form-control tanggal" value="{{ $jadwal->tanggal_mulai }}" name="tanggal_mulai" autocomplete="off">
 			</div>
 		</div>
 		<div class="form-group row">
 			<label for="nama" class="col-sm-4 col-form-label">Tanggal Selesai</label>
 			<div class="col-sm-8">
-				<input required type="text" class="form-control tanggal" value="" name="tanggal_selesai" autocomplete="off">
+				<input required type="text" class="form-control tanggal" value="{{ $jadwal->tanggal_selesai }}" name="tanggal_selesai" autocomplete="off">
 			</div>
 		</div>	
 		<div class="form-group row">
 			<label for="nama" class="col-sm-4 col-form-label">Aktif ?</label>
 			<div class="col-sm-8">
 				<div class="form-check">
-					<input class="form-check-input" type="radio" name="is_aktif" id="exampleRadios1" value="Y" checked>
+					<input class="form-check-input" type="radio" name="is_aktif" id="exampleRadios1" value="Y" {{ $jadwal->is_aktif == 'Y' ? 'checked' : '' }}>
 					<label class="form-check-label" for="exampleRadios1">
 						Y
 					</label>
 				</div>
 				<div class="form-check">
-					<input class="form-check-input" type="radio" name="is_aktif" id="exampleRadios2" value="N">
+					<input class="form-check-input" type="radio" name="is_aktif" id="exampleRadios2" value="N" {{ $jadwal->is_aktif == 'N' ? 'checked' : '' }}> 
 					<label class="form-check-label" for="exampleRadios2">
 						N
 					</label>
