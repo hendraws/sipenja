@@ -8,6 +8,7 @@
 	</thead>
 	<tbody>
 		@foreach($jadwal->getTutorialDetail as $ket => $val)
+
 		<tr>
 			<td><input type="text"  class="form-control" readonly disabled  name="waktu[{{ $val->number }}]" value="{{ $val->waktu }}"></td>
 			<td><input type="text"  class="form-control" readonly disabled  name="matakuliah[{{ $val->number }}]" value="{{ optional($val->getMatakuliah)->nama_mk }}"></td>

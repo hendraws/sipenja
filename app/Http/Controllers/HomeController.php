@@ -37,8 +37,9 @@ class HomeController extends Controller
     		$mahasiswaJadwal = MahasiswaJadwal::where('nim', auth()->user()->nik_npm)->get();
     		if($request->ajax())
     		{
-    			$jadwal = JadwalTutorial::where('id', $request->jadwal_tutorial_id)->first();
                 $cek = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)->pluck('number')->toArray();
+    			$jadwal = JadwalTutorial::where('id', $request->jadwal_tutorial_id)->first();
+
     			return view('mahasiswa.table_paket', compact('jadwal','cek'));
 
     			// $jadwal = JadwalTutorial::where('jurusan_id', $request->jurusan_id)->where('jadwal_id', $request->jadwal_id)->where('kelompok_id', $request->lokasi_id)->get();
