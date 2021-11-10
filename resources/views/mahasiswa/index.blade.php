@@ -18,16 +18,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	<link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css')}}">
 	<link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
 	<!-- Google Font: Source Sans Pro -->
-	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">	 
-{{-- 	<style type="text/css">
-		.content-wrapper{
-			 background-image: url({{ asset('dist/img/logo.png') }});
-			 background-repeat: no-repeat;
-			 background-color:rgba(0,0,0,0.);
-			 background-size: 500px;
-			 background-position:center bottom;
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+	<style type="text/css">
+
+		input[type=checkbox]
+		{
+			-ms-transform: scale(2); /* IE */
+			-moz-transform: scale(2); /* FF */
+			-webkit-transform: scale(2); /* Safari and Chrome */
+			-o-transform: scale(2); /* Opera */
+			padding: 10px;
 		}
-	</style> --}}
+	</style>
 	@yield('css')
 	@toastr_css
 	<!-- REQUIRED SCRIPTS -->
@@ -112,7 +114,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 					}
 				})
-		}) //tutup
+			});
+
+			$(document).on('change', '#lokasi', function(){
+				var url = "{{ url()->current() }}?jadwal_tutorial_id="+$(this).val();
+				getDataTable(url, '#paketMk');
+			});
 
 		});
 	</script>
@@ -178,7 +185,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 												<div class="col-md-6">
 													<input class="form-control form-control-sm" disabled="" readonly="" value="{{ ucwords(optional($mahasiswa->getJurusan)->name) }}">
 												</div>
-											</div>				
+											</div>
 										</div>
 										<div class="col-6">
 											<h5>Informasi</h5>
@@ -186,7 +193,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 												<div class="col-md-12 pl-4">
 													<textarea class="form-control" id="exampleFormControlTextarea1" rows="4" readonly="" disabled=""></textarea>
 												</div>
-											</div>		
+											</div>
 										</div>
 									</div>
 									<hr>
@@ -195,7 +202,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 										<div class="row justify-content-center form-group">
 											<label for="tempat_lahir" class="col-sm-2 col-form-label">Pilih Lokasi Tutorial</label>
 											<div class="col-md-6">
-												<select class="form-control" name="lokasi" id="lokasi" required>
+												<select class="form-control" name="jadwal_tutorial_id" id="lokasi" required>
 													<option disabled selected value="">Pilih Lokasi</option>
 													@foreach($lokasi as $key => $val)
 													<option value="{{ $key }}">{{ $val }}</option>
@@ -206,71 +213,61 @@ scratch. This page gets rid of all links and provides the needed markup only.
 											<input type="hidden" name="jurusan_id" id="jurusan" value="{{ $mahasiswa->jurusan_id }}">
 										</div>
 										<div class="row justify-content-center ">
-											<div class="col-md-10 border">
+
+											<div class="col-md-10 border" id="paketMk">
 												<table class="table table-borderless table-sm">
 													<thead>
 														<tr>
 															<th scope="col" width="40%" class="text-center">Pilih Jadwal Tutorial</th>
-															<th scope="col" width="60%" class="text-center">Matakuliah Tawar</th>
+															<th scope="col" width="50%" class="text-center">Matakuliah Tawar</th>
+															<th scope="col" width="30%" class="text-center">Pilih</th>
 														</tr>
 													</thead>
 													<tbody>
-
 														<tr>
-															<td><input type="text"  class="form-control" readonly  name="waktu[1]" value="Sabtu/10.00-12.00"></td>	
-															<td>
-																<select class="form-control select" name="jadwal_tutorial_detail_id[1]" data-number="1" {{ in_array('1', $cek) ? 'disabled readonly' : '' }} >
-																	<option readonly selected value="">Pilih MataKuliah</option>
-																</select>
-															</td>	
+															<td><input type="text"  class="form-control" readonly  name="waktu[1]" value="Sabtu/10.00-12.00"></td>
+															<td><input type="text"  class="form-control" readonly  value=""></td>
+															<td class="align-middle text-center justify-content-center"><input type="checkbox" class="form-check m-auto"></td>
 														</tr>
 														<tr>
 															<td><input   type="text"  class="form-control" readonly  name="waktu[2]" value="Sabtu/13.00-15.00"></td>
 															<td>
-																<select class="form-control select" name="jadwal_tutorial_detail_id[2]" data-number="2" {{ in_array('2', $cek) ? 'disabled readonly' : '' }}>
-																	<option readonly selected value="">Pilih MataKuliah</option>
-																</select>
-															</td>	
+																<input type="text"  class="form-control" readonly  value="">
+															</td>
+															<td class="align-middle text-center"><input type="checkbox" class="form-check m-auto"  ></td>
 														</tr>
 														<tr>
-															<td><input   type="text"  class="form-control" readonly  name="waktu[3]" value="Sabtu/15.10-17.10"></td>	
-															<td>
-																<select class="form-control select" name="jadwal_tutorial_detail_id[3]" data-number="3" {{ in_array('3', $cek) ? 'disabled readonly' : '' }}>
-																	<option readonly selected value="">Pilih MataKuliah</option>
-																</select>
-															</td>	
+															<td><input   type="text"  class="form-control" readonly  name="waktu[3]" value="Sabtu/15.10-17.10"></td>
+															<td><input type="text"  class="form-control" readonly  value=""></td>
+															<td class="align-middle text-center"><input type="checkbox" class="form-check m-auto"  ></td>
 														</tr>
 														<tr>
 															<td><input   type="text"  class="form-control" readonly  name="waktu[4]" value="Minggu/08.00-10.00"></td>
 															<td>
-																<select class="form-control select" name="jadwal_tutorial_detail_id[4]" data-number="4" {{ in_array('4', $cek) ? 'disabled readonly' : '' }}>
-																	<option readonly selected value="">Pilih MataKuliah</option>
-																</select>
-															</td>	
+																<input type="text"  class="form-control" readonly  value="">
+															</td>
+															<td class="align-middle text-center"><input type="checkbox" class="form-check m-auto"  ></td>
 														</tr>
 														<tr>
 															<td><input   type="text"  class="form-control" readonly  name="waktu[5]" value="Minggu/10.00-12.00"></td>
 															<td>
-																<select class="form-control select" name="jadwal_tutorial_detail_id[5]" data-number="5" {{ in_array('5', $cek) ? 'disabled readonly' : '' }}>
-																	<option readonly selected value="">Pilih MataKuliah</option>
-																</select>
-															</td>	
+																<input type="text"  class="form-control" readonly  value="">
+															</td>
+															<td class="align-middle text-center"><input type="checkbox" class="form-check m-auto"  ></td>
 														</tr>
 														<tr>
 															<td><input   type="text"  class="form-control" readonly  name="waktu[6]" value="Minggu/13.00-15.00"></td>
 															<td>
-																<select class="form-control select" name="jadwal_tutorial_detail_id[6]" data-number="6" {{ in_array('6', $cek) ? 'disabled readonly' : '' }}>
-																	<option readonly selected value="">Pilih MataKuliah</option>
-																</select>
-															</td>	
+																<input type="text"  class="form-control" readonly  value="">
+															</td>
+															<td class="align-middle text-center"><input type="checkbox" class="form-check m-auto"  ></td>
 														</tr>
 														<tr>
 															<td><input   type="text"  class="form-control" readonly  name="waktu[7]" value="Minggu/15.10-17.10"></td>
 															<td>
-																<select class="form-control select" name="jadwal_tutorial_detail_id[7]" data-number="7" {{ in_array('7', $cek) ? 'disabled readonly' : '' }}>
-																	<option readonly selected value="">Pilih MataKuliah</option>
-																</select>
-															</td>	
+																<input type="text"  class="form-control" readonly  value="">
+															</td>
+															<td class="align-middle text-center"><input type="checkbox" class="form-check m-auto"  ></td>
 														</tr>
 													</tbody>
 												</table>
@@ -317,7 +314,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 				Sistem Informasi Pengelola Jadwal Tutorial
 			</div>
 			<!-- Default to the left -->
-			<strong>Copyright &copy; {{ date('Y') }}</strong> 
+			<strong>Copyright &copy; {{ date('Y') }}</strong>
 		</footer>
 	</div>
 	<!-- ./wrapper -->

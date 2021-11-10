@@ -9,11 +9,11 @@
 			<div class="col-md-2">NIM</div>
 			<div class="col-md-10">: {{ $mahasiswa->nim }}</div>
 			<div class="col-md-2">Nama</div>
-			<div class="col-md-10">: {{ optional($mahasiswa->getMahasiswa)->nama }}</div>	
+			<div class="col-md-10">: {{ optional($mahasiswa->getMahasiswa)->nama }}</div>
 			<div class="col-md-2">IDBILL</div>
-			<div class="col-md-10">: {{ $mahasiswa->kode_order }}</div>	
+			<div class="col-md-10">: {{ $mahasiswa->kode_order }}</div>
 			<div class="col-md-2">Lokasi</div>
-			<div class="col-md-10">: {{ optional($mahasiswa->getLokasi)->lokasi }}</div>
+			<div class="col-md-10">: {{optional(optional($mahasiswa->getJadwalTutorial)->getKelas)->nama}}</div>
 		</div>
 		<hr>
 		<table class="table table-sm">
@@ -26,7 +26,7 @@
 			<tbody>
 				@foreach($mahasiswa->getMahasiswaJadwalDetail as $key => $val)
 				<tr>
-					
+
 				<td>{{ optional($val->getJadwalDetail)->waktu }}</td>
 				<td>{{ optional(optional($val->getJadwalDetail)->getMatakuliah)->nama_mk }}</td>
 				</tr>
