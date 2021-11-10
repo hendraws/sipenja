@@ -1,5 +1,5 @@
 @extends('layouts.app_master')
-@section('title','Tutor')
+@section('title','Mahasiswa')
 @section('css')
 <link href="{{ asset('vendors/DataTables/datatables.min.css') }}" rel="stylesheet">
 @endsection

@@ -12,15 +12,15 @@
 			<div class="col-md-2">NIM</div>
 			<div class="col-md-10">: {{ $mahasiswa->nim }}</div>
 			<div class="col-md-2">Nama</div>
-			<div class="col-md-10">: {{ optional($mahasiswa->getMahasiswa)->nama }}</div>	
+			<div class="col-md-10">: {{ optional($mahasiswa->getMahasiswa)->nama }}</div>
 			<div class="col-md-2">IDBILL</div>
-			<div class="col-md-10">: {{ $mahasiswa->kode_order }}</div>	
+			<div class="col-md-10">: {{ $mahasiswa->kode_order }}</div>
 			<div class="col-md-2">Lokasi</div>
 			<div class="col-md-10">
-				<select class="form-control" name="lokasi" id="lokasi_edit" required>
+				<select class="form-control" name="jadwal_tutorial_id" id="lokasi_edit" required>
 					<option disabled selected value="">Pilih Lokasi</option>
 					@foreach($lokasi as $key => $val)
-					<option value="{{ $key }}" {{ $mahasiswa->lokasi_id == $key ? 'selected' : '' }}>{{ $val }}</option>
+					<option value="{{ $key }}" {{ $mahasiswa->jadwal_tutorial_id == $key ? 'selected' : '' }}>{{ $val }}</option>
 					@endforeach
 				</select>
 			</div>
@@ -29,23 +29,21 @@
 		<table class="table table-sm">
 			<thead class="thead-dark">
 				<tr>
-					<th class="text-center" scope="col">Waktu</th>
-					<th class="text-center" scope="col" width="70%">Matakuliah</th>
-				</tr>
+                    <th scope="col" width="40%" class="text-center">Pilih Jadwal Tutorial</th>
+                    <th scope="col" width="50%" class="text-center">Matakuliah Tawar</th>
+                    <th scope="col" width="30%" class="text-center">Pilih</th>
+                </tr>
 			</thead>
 			<tbody>
-				@foreach($mahasiswa->getMahasiswaJadwalDetail as $key => $val)
-				<tr>
-					
-				<td>{{ optional($val->getJadwalDetail)->waktu }}</td>
-				<td>
-					<select class="form-control select" name="jadwal_tutorial_detail_id[{{ $val->id }}]" data-number="{{ $val->number }}" required>
-						<option disabled selected value="">Pilih MataKuliah</option>
-						<option value="{{ optional($val->getJadwalDetail)->id }}" selected>{{optional(optional($val->getJadwalDetail)->getMatakuliah)->kode_mk .' - '. optional(optional($val->getJadwalDetail)->getMatakuliah)->nama_mk ." || ". optional(optional($val->getJadwalDetail)->getTutor)->nama }}</option>
-					</select>
-				</td>
-				</tr>
-				@endforeach
+                @foreach($paket->getTutorialDetail as $ket => $val)
+                <tr>
+                    <td><input type="text"  class="form-control" readonly disabled  name="waktu[{{ $val->number }}]" value="{{ $val->waktu }}"></td>
+                    <td><input type="text"  class="form-control" readonly disabled  name="matakuliah[{{ $val->number }}]" value="{{ optional($val->getMatakuliah)->nama_mk }}"></td>
+                    <td class="align-middle text-center justify-content-center">
+                        <input type="checkbox" class="form-check m-auto" name="jadwal_tutorial_detail_id[{{ $val->number }}]" value="{{ $val->id }}" {{ empty($val->matakuliah_id) ? 'readonly disabled' : '' }} {{ in_array($val->number, $cek) ? 'checked' : '' }} {{ in_array($val->number, $cekAll) ? 'checked readonly disabled' : '' }} >
+                    </td>
+                </tr>
+                @endforeach
 			</tbody>
 		</table>
 	</div>

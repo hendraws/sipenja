@@ -11,15 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-	return redirect(route('login'));
-});
-
 Auth::routes();
 
 // dibawah ini dibutuhkan akses autitentifikasi
 Route::group(['middleware' => 'auth'], function () { 
-
+	Route::get('/', 'HomeController@index');
 	Route::group(['middleware' => ['role:admin']], function () {
 		Route::resource('/jadwal','JadwalController');
 		Route::get('/jadwal/{id}/create-tanggal','JadwalController@createTanggal');
@@ -29,7 +25,6 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::delete('/jadwal/{id}/delete-jadwal-tutorial','JadwalTutorialDetailController@destroy');
 		Route::get('/jadwal/{jadwalid}/{id}/edit-jadwal-tutorial','JadwalTutorialDetailController@edit');
 		Route::patch('/jadwal/{id}/update-jadwal-tutorial','JadwalTutorialDetailController@update');
-
 	// data master
 		Route::resource('master/jurusan', 'RefJurusanController');
 		Route::get('master/jurusan/{id}/delete', 'RefJurusanController@delete');
@@ -49,9 +44,11 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::get('master/tutor-pendidikan/{tutor_pendidikan}/delete', 'TutorPendidikanController@delete');
 		Route::resource('master/mahasiswa', 'MahasiswaController');
 		Route::resource('master/keterangan-layanan', 'KeteranganLayananController');
+
+		Route::get('report', 'ReportController@index');
 	});
 
-	Route::get('/', 'HomeController@index');
+
 	Route::group(['middleware' => ['role:mahasiswa']], function () {
 		Route::post('/store/jadwal-mahasiswa', 'MahasiswaController@storeJadwalMhs');
 		Route::get('jadwal-tutorial-mahasiswa', 'MahasiswaController@jadwal');

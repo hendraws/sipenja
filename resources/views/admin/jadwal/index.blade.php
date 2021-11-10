@@ -31,6 +31,7 @@
 			{data: 'tahun_ajaran', name: 'tahun_ajaran', title: 'Tahun Ajaran'},
 			{data: 'tanggal_mulai', name: 'tanggal_mulai', title: 'Tanggal Mulai'},
 			{data: 'tanggal_selesai', name: 'tanggal_selesai', title: 'Tanggal Selesai'},
+			{data: 'is_aktif', name: 'is_aktif', title: 'Aktif?'},
 			{data: 'action', name: 'action', orderable: false, searchable: false},
 			]
 		});
@@ -40,6 +41,45 @@
 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			}
 		});
+
+		$(document).on('click','.hapus',function(e){
+			e.preventDefault();
+			var tag = $(this);
+			var id = $(this).data('id');
+			var url = '{{ action('JadwalController@destroy',':id') }}';
+			url = url.replace(':id',id);
+			console.log(url);
+			Swal.fire({
+				title: 'Apakah Anda Yakin ?',
+				text: "Data akan terhapus tidak dapat dikembalikan lagi !",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+				if (result.value == true) {
+					$.ajax({
+						type:'DELETE',
+						url:url,
+						data:{
+							"_token": "{{ csrf_token() }}",
+						},
+						success:function(data) {
+							if (data.code == '200'){
+								Swal.fire(
+									'Deleted!',
+									'Your file has been deleted.',
+									'success'
+									);
+								$('.table').DataTable().ajax.reload();
+							}
+						}
+					});
+					
+				}
+			})
+		}) //tutup
 
 	});
 </script>

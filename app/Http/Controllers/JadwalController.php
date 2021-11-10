@@ -46,9 +46,9 @@ class JadwalController extends Controller
     			return $tanggal_selesai;
     		})     
     		->addColumn('action', function ($row) {
-    			$action =  '<a class="btn btn-sm btn-warning" href="'.action('JadwalController@show',$row).'" data-placement="top" title="Detail">Detail</a>';
-    			// $action = $action .  '<a class="btn btn-sm btn-danger modal-button ml-2" href="Javascript:void(0)"  data-target="ModalForm" data-url="'.action('KantorCabangController@delete',$row->id).'"  data-toggle="tooltip" data-placement="top" title="Edit" >Hapus</a>';
-
+    			$action =  '<a class="btn btn-sm btn-info btn-xs" href="'.action('JadwalController@show',$row).'" data-placement="top" title="Detail" style="width:30%">Detail</a>';
+    			$action = $action .  '<a class="btn btn-sm btn-warning modal-button btn-xs m-1" href="Javascript:void(0)"  data-target="ModalForm" data-url="'.action('JadwalController@edit',$row).'"  data-toggle="tooltip" data-placement="top" title="Edit" style="width:30%">Edit</a>';
+    			$action = $action.  ' <button type="button" class="btn btn-danger btn-xs hapus" data-id="'. $row->id .'" style="width:30%">Hapus</button>';
     			return $action;
     		})
     		->rawColumns(['action'])
@@ -82,12 +82,17 @@ class JadwalController extends Controller
     		'tahun_ajaran' => 'required',
     		'tanggal_mulai' => 'required',
     		'tanggal_selesai' => 'required',
-
+    		'is_aktif' => 'required',
     	]);
 
     	DB::beginTransaction();
     	try {
     		$jadwal['created_by'] = auth()->user()->nik_npm;
+
+    		if($request->is_aktif == 'Y'){
+    			Jadwal::where('is_aktif', 'Y')->update(['is_aktif'=> 'N']);
+    		}
+
     		Jadwal::create($jadwal);
     	} catch (\Exception $e) {
     		DB::rollback();
@@ -125,7 +130,7 @@ class JadwalController extends Controller
     public function edit(Jadwal $jadwal)
     {
 
-    	return view('admin.jadwal.edit', compact($jadwal));
+    	return view('admin.jadwal.edit_modal', compact('jadwal'));
     }
 
     /**
@@ -137,7 +142,36 @@ class JadwalController extends Controller
      */
     public function update(Request $request, Jadwal $jadwal)
     {
-        //
+    	$data = $request->validate([
+    		'nomor' => 'required',
+    		'tahun_ajaran' => 'required',
+    		'tanggal_mulai' => 'required',
+    		'tanggal_selesai' => 'required',
+    		'is_aktif' => 'required',
+    	]);
+
+    	DB::beginTransaction();
+    	try {
+    		$data['created_by'] = auth()->user()->nik_npm;
+
+    		if($request->is_aktif == 'Y'){
+    			Jadwal::where('is_aktif', 'Y')->update(['is_aktif'=> 'N']);
+    		}
+
+    		$jadwal->update($data);
+    	} catch (\Exception $e) {
+    		DB::rollback();
+    		toastr()->error($e->getMessage(), 'Error');
+    		return back();
+    	}catch (\Throwable $e) {
+    		DB::rollback();
+    		toastr()->error($e->getMessage(), 'Error');
+    		throw $e;
+    	}
+
+    	DB::commit();
+    	toastr()->success('Data telah diubah', 'Berhasil');
+    	return redirect(action('JadwalController@index'));
     }
 
     /**
@@ -148,7 +182,9 @@ class JadwalController extends Controller
      */
     public function destroy(Jadwal $jadwal)
     {
-        //
+		$jadwal->delete();
+    	$result['code'] = '200';
+    	return response()->json($result);
     }
 
     public function createTanggal($jadwalId)
