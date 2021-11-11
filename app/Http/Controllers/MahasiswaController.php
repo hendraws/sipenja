@@ -226,33 +226,33 @@ class MahasiswaController extends Controller
     public function storeJadwalMhs(Request $request)
     {
         // dd($request);
-        DB::beginTransaction();
+    	DB::beginTransaction();
     	try {
-            $last_id = MahasiswaJadwal::latest()->first();
+    		$last_id = MahasiswaJadwal::latest()->first();
     		$last_id = $last_id  ? $last_id->id + 1 :  '1';
     		$nim = auth()->user()->nik_npm;
 
     		$mhsJadwal = MahasiswaJadwal::create([
-                'kode_order' => $nim.'-'.date('dmY').'-'.$last_id,
+    			'kode_order' => $nim.'-'.date('dmY').'-'.$last_id,
     			'nim' => $nim,
     			'jadwal_tutorial_id' => $request->jadwal_tutorial_id,
     			'status' => 'aktif'
     		]);
 
-            foreach ($request->jadwal_tutorial_detail_id as $key => $value) {
+    		foreach ($request->jadwal_tutorial_detail_id as $key => $value) {
 
-                $jadwal = JadwalTutorialDetail::where('id', $value)->first();
-                $a = MahasiswaJadwalDetail::create([
-                    'nim' => $nim,
-                    'mahasiswa_jadwal_id' => $mhsJadwal->id,
-                    'jadwal_id' => $jadwal->jadwal_id,
-                    'jadwal_tutorial_id' => $jadwal->jadwal_tutorial_id,
-                    'jadwal_tutorial_detail_id' => $jadwal->id,
-                    'number' => $jadwal->number,
-                    'waktu'=> $jadwal->waktu,
-                    'matakuliah_id'=> $jadwal->matakuliah_id,
-                ]);
-            }
+    			$jadwal = JadwalTutorialDetail::where('id', $value)->first();
+    			$a = MahasiswaJadwalDetail::create([
+    				'nim' => $nim,
+    				'mahasiswa_jadwal_id' => $mhsJadwal->id,
+    				'jadwal_id' => $jadwal->jadwal_id,
+    				'jadwal_tutorial_id' => $jadwal->jadwal_tutorial_id,
+    				'jadwal_tutorial_detail_id' => $jadwal->id,
+    				'number' => $jadwal->number,
+    				'waktu'=> $jadwal->waktu,
+    				'matakuliah_id'=> $jadwal->matakuliah_id,
+    			]);
+    		}
     	} catch (\Exception $e) {
     		DB::rollback();
     		toastr()->error($e->getMessage(), 'Error');
@@ -276,42 +276,42 @@ class MahasiswaController extends Controller
     public function editJadwal(Request $request, MahasiswaJadwal $mahasiswa)
     {
 
-    	// if($request->ajax())
-    	// {
-    	// 	if($request->has('lokasi_id')){
+    	$jadwal = Jadwal::where('is_aktif', 'Y')->first();
+    	$cek = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)
+    	->where('mahasiswa_jadwal_id', $mahasiswa->id)
+    	->pluck('number', 'jadwal_tutorial_detail_id')->toArray();
+    	$cekAll = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)
+    	->where('mahasiswa_jadwal_id',"!=" , $mahasiswa->id)
+    	->pluck('number')->toArray();
 
-    	// 		$jadwal = JadwalTutorial::where('jurusan_id', $request->jurusan_id)->where('jadwal_id', $request->jadwal_id)->where('kelompok_id', $request->lokasi_id)->get();
-    	// 		$matakuliah = JadwalTutorialDetail::with('getMatakuliah','getTutor')
-    	// 		->where('jadwal_id', $request->jadwal_id)
-    	// 		->whereIn('jadwal_tutorial_id', $jadwal->pluck('id'))
-    	// 		->where('number',$request->number)
-    	// 		->whereHas('getMatakuliah')
-    	// 		->whereHas('getTutor')
-    	// 		->get();
-    	// 		// dd($matakuliah->toArray(), $jadwal->toArray());
-    	// 		return response()->json($matakuliah);
-    	// 	}
-    	// }
+    	$paket = JadwalTutorial::where('id', $mahasiswa->jadwal_tutorial_id)->first();
 
-        $jadwal = Jadwal::where('is_aktif', 'Y')->first();
-        $paket = JadwalTutorial::where('id', $mahasiswa->jadwal_tutorial_id)->first();
     	$lokasi = $jadwal->getJadwalTutorial->mapWithKeys(function ($item, $key) {
-            return  [$item->id => $item->getKelompok->lokasi .' - Kelas : '. $item->getKelas->nama];
-        });
-        $cek = MahasiswaJadwalDetail::where('jadwal_id', $paket->id)->where('nim', auth()->user()->nik_npm)
-                ->where('mahasiswa_jadwal_id', $mahasiswa->id)
-                ->pluck('number')->toArray();
-        $cekAll = MahasiswaJadwalDetail::where('jadwal_id', $paket->id)->where('nim', auth()->user()->nik_npm)
-        ->where('mahasiswa_jadwal_id',"!=" , $mahasiswa->id)
-        ->pluck('number')->toArray();
-        return view('mahasiswa.edit', compact('mahasiswa','jadwal','lokasi','paket','cek', 'cekAll'));
+    		return  [$item->id => $item->getKelompok->lokasi .' - Kelas : '. $item->getKelas->nama];
+    	});
+
+    	if($request->ajax() && $request->has('jadwal_tutorial_id')){
+    		$jadwalTutor = JadwalTutorial::where('id', $request->jadwal_tutorial_id)->first();
+    		return view('mahasiswa.table_paket', compact('jadwalTutor','cek', 'cekAll'));
+    	}
+        // dd($paket,$lokasi,$jadwal,$mahasiswa->jadwal_tutorial_id);
+
+
+    	return view('mahasiswa.edit', compact('mahasiswa','jadwal','lokasi','paket','cek', 'cekAll'));
     }
 
     public function updateJadwal(Request $request, MahasiswaJadwal $mahasiswa)
     {
-        dd($request);
+    	dd($request, $mahasiswa);
     	DB::beginTransaction();
     	try {
+    		if($request->has('jadwal_tutorial_detail_id')){
+    			if($request->has('jadwal_sekarang')){
+	    			// MahasiswaJadwalDetail::where('jadwal_tutorial_id',$mahasiswa )
+    			}
+    			
+    		}
+
     		$mahasiswa->update([
     			'jadwal_tutorial_id' => $request->lokasi
     		]);

@@ -37,20 +37,10 @@ class HomeController extends Controller
     		$mahasiswaJadwal = MahasiswaJadwal::where('nim', auth()->user()->nik_npm)->get();
     		if($request->ajax())
     		{
-    			$jadwal = JadwalTutorial::where('id', $request->jadwal_tutorial_id)->first();
                 $cek = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)->pluck('number')->toArray();
-    			return view('mahasiswa.table_paket', compact('jadwal','cek'));
+    			$jadwalTutor = JadwalTutorial::where('id', $request->jadwal_tutorial_id)->first();
 
-    			// $jadwal = JadwalTutorial::where('jurusan_id', $request->jurusan_id)->where('jadwal_id', $request->jadwal_id)->where('kelompok_id', $request->lokasi_id)->get();
-    			// $matakuliah = JadwalTutorialDetail::with('getMatakuliah','getTutor')
-    			// ->where('jadwal_id', $request->jadwal_id)
-    			// ->whereIn('jadwal_tutorial_id', $jadwal->pluck('id'))
-    			// ->where('number',$request->number)
-    			// ->whereHas('getMatakuliah')
-    			// ->whereHas('getTutor')
-    			// ->get();
-
-    			// return response()->json($matakuliah);
+    			return view('mahasiswa.table_paket', compact('jadwalTutor','cek'));
     		}
     		$lokasi = $cek = [];
     		if(!empty($jadwal->getJadwalTutorial)){
