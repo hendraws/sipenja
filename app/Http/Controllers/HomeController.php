@@ -37,7 +37,7 @@ class HomeController extends Controller
     		$mahasiswaJadwal = MahasiswaJadwal::where('nim', auth()->user()->nik_npm)->get();
     		if($request->ajax())
     		{
-                $cek = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)->pluck('number')->toArray();
+                $cek = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)->where('is_deleted', 'N')->pluck('number')->toArray();
     			$jadwalTutor = JadwalTutorial::where('id', $request->jadwal_tutorial_id)->first();
 
     			return view('mahasiswa.table_paket', compact('jadwalTutor','cek'));
@@ -48,7 +48,7 @@ class HomeController extends Controller
     				return  [$item->id => $item->getKelompok->lokasi .' - Kelas : '. $item->getKelas->nama];
     			});
 
-    			$cek = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)->pluck('number')->toArray();
+    			$cek = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)->where('is_deleted', 'N')->pluck('number')->toArray();
     		}
 
 
