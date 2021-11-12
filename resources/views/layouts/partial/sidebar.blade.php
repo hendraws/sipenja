@@ -59,14 +59,14 @@
 					</p>
 				</a>
 			</li>
-			{{-- <li class="nav-item">
+			<li class="nav-item">
 				<a href="{{ action('ReportController@index') }}" class="nav-link">
 					<i class="nav-icon fa fa-file"></i>
 					<p>
 						Report
 					</p>
 				</a>
-			</li> --}}
+			</li>
 
 			<li class="nav-item has-treeview">
 				<a href="#" class="nav-link">
