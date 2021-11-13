@@ -42,7 +42,7 @@ class ReportController extends Controller
                     $q->Where('lokasi_tutorials.id', request()->lokasi)
                 )
                 ->get();
-            return view('admin.report.export', compact('report'));
+            return view('admin.report.table', compact('report'));
         }
 
         $nim = Mahasiswa::selectRaw('nim, CONCAT(nim," - ", nama) as nim_nama')->pluck('nim_nama', 'nim');
