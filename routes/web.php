@@ -14,7 +14,7 @@
 Auth::routes();
 
 // dibawah ini dibutuhkan akses autitentifikasi
-Route::group(['middleware' => 'auth'], function () { 
+Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', 'HomeController@index');
 	Route::group(['middleware' => ['role:admin']], function () {
 		Route::resource('/jadwal','JadwalController');
@@ -31,7 +31,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('master/fakultas', 'RefFakultasController');
 		Route::get('master/fakultas/{id}/delete', 'RefFakultasController@delete');
 		Route::resource('master/lokasi', 'LokasiTutorialController');
-		Route::get('master/lokasi/{lokasi}/delete', 'LokasiTutorialController@delete');	
+		Route::get('master/lokasi/{lokasi}/delete', 'LokasiTutorialController@delete');
 		Route::resource('master/matakuliah', 'MataKuliahController');
 		Route::get('master/matakuliah/{matakuliah}/delete', 'MataKuliahController@delete');
 		Route::resource('master/kelas', 'KelasController');
@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('master/keterangan-layanan', 'KeteranganLayananController');
 
 		Route::get('report', 'ReportController@index');
+		Route::get('report-export', 'ReportController@export');
 	});
 
 

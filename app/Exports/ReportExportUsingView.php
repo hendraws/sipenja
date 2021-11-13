@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Exports;
 
-use App\Exports\ReportExportUsingView;
 use App\Jadwal;
-use App\LokasiTutorial;
-use App\Mahasiswa;
-use App\MataKuliah;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ReportController extends Controller
+class ReportExportUsingView implements FromView, ShouldAutoSize,WithStyles,ShouldQueue
 {
+    use Exportable;
 
-    public function index(Request $request)
-    {
-        if ($request->ajax()) {
-            // dd($request->all());
-            $report = Jadwal::join('mahasiswa_jadwal_details', 'mahasiswa_jadwal_details.jadwal_id', 'jadwals.id')
+	public function view(): View
+	{
+
+		$report = Jadwal::join('mahasiswa_jadwal_details', 'mahasiswa_jadwal_details.jadwal_id', 'jadwals.id')
                 ->join('jadwal_tutorial_details', 'jadwal_tutorial_details.id', 'mahasiswa_jadwal_details.jadwal_tutorial_detail_id')
                 ->join('mata_kuliahs', 'mata_kuliahs.id', 'jadwal_tutorial_details.matakuliah_id')
                 ->join('jadwal_tutorials', 'jadwal_tutorials.id', 'jadwal_tutorial_details.jadwal_tutorial_id')
@@ -32,7 +33,7 @@ class ReportController extends Controller
                 ->when(request()->filled('masa') && request()->masa != 'null' , fn($q) =>
                     $q->Where('tahun_ajaran', request()->masa)
                 )
-                ->when(request()->filled('matakuliah') && request()->masa != 'matakuliah', fn($q) =>
+                ->when(request()->filled('matakuliah') && request()->masa != 'null', fn($q) =>
                     $q->Where('mata_kuliahs.id', request()->matakuliah)
                 )
                 ->when(request()->filled('nim') && request()->nim != 'null', fn($q) =>
@@ -42,25 +43,44 @@ class ReportController extends Controller
                     $q->Where('lokasi_tutorials.id', request()->lokasi)
                 )
                 ->get();
-            return view('admin.report.export', compact('report'));
-        }
 
-        $nim = Mahasiswa::selectRaw('nim, CONCAT(nim," - ", nama) as nim_nama')->pluck('nim_nama', 'nim');
-        $matakuliah = MataKuliah::selectRaw('id, CONCAT(kode_mk," - ", nama_mk) as mk')->pluck('mk', 'id');
-        $lokasi = LokasiTutorial::pluck('lokasi', 'id');
+                return view('admin.report.export', compact('report'));
+	}
 
-        $datamasa = ['2019/2020', '2020/2021', '2021/2022', '2022/2023', '2023/2024'];
-        $masa = [];
-        foreach($datamasa as $val){
-            $masa[$val] = $val;
-        }
-        return view('admin.report.index', compact( 'nim', 'matakuliah', 'lokasi', 'masa'));
-    }
-
-    public function export(Request $request)
-    {
-
-    	$filename = 'Report-Jadwal-Tutorial-'. now()->format('Y-md_Hi') .'.xlsx';
-    	return Excel::download(new ReportExportUsingView(), $filename);
-    }
+	public function styles(Worksheet $sheet)
+	{
+		return [
+			'A:Q' => [
+				'font' => ['name' => 'Times New Roman']
+			],
+			// 'A5:Q7'=> [
+			// 	'alignment' => [
+			// 		'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+			// 		'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+			// 	],
+			// 	'font' => [
+			// 		'bold' => true,
+			// 		'size'      =>  14,
+			// 	]
+			// ],
+			'A5:Q7'=> [
+				'alignment' => [
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+				],
+				'font' => [
+					'bold' => true,
+				]
+			],
+			// 'A4:N5'=> [
+			// 	'alignment' => [
+			// 		'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+			// 		'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+			// 	],
+			// 	'font' => [
+			// 		'bold' => true,
+			// 	]
+			// ],
+		];
+	}
 }

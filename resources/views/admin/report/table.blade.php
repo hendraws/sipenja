@@ -27,7 +27,7 @@
     </tr>
   </thead>
   <tbody>
-    @foreach ($report as $item)
+    @forelse ($report as $item)
 
     <tr>
         <td>{{ $item->tahun_ajaran }}</td>
@@ -48,6 +48,10 @@
         <td><a href="https://{{ $item->link }}">{{ $item->link }}</a></td>
         <td>{{ $item->keterangan }}</td>
     </tr>
-    @endforeach
+    @empty
+    <tr>
+        <td class="text-center text-bold bg-secondary" colspan="17"><h5>TIDAK ADA DATA</h5></td>
+    </tr>
+    @endforelse
   </tbody>
 </table>
