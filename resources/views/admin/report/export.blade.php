@@ -11,7 +11,7 @@
             <td>Lampiran Surat Direktur UT Pangkalpinang</td>
         </tr>
         <tr>
-            <td>Nomor : {{ $report->first()->nomor }}</td>
+            <td>Nomor : {{ $report->first()->nomor  ?? ''}}</td>
         </tr>
         <tr>
             <td>Tentang</td>
@@ -24,11 +24,11 @@
             </h5></td>
 		</tr>
 		<tr>
-			<td colspan="17"><h5>UT PANGKALPINANG MASA REGISTRASI {{  $report->first()->tahun_ajaran }}
+			<td colspan="17"><h5>UT PANGKALPINANG MASA REGISTRASI {{  $report->first()->tahun_ajaran ?? ''}}
             </h5></td>
 		</tr>
 		<tr>
-			<td colspan="17"><h5>Tanggal pelaksaan : {{ date('d M Y', strtotime($report->first()->tanggal_mulai)) }} - {{ date('d M y', strtotime($report->first()->tanggal_selesai)) }}
+			<td colspan="17"><h5>Tanggal pelaksaan : {{ date('d M Y', strtotime($report->first()->tanggal_mulai ?? now())) }} - {{ date('d M y', strtotime($report->first()->tanggal_selesai ?? now())) }}
             </h5></td>
 		</tr>
 		<tr>

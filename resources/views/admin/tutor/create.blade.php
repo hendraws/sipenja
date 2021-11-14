@@ -22,6 +22,12 @@
 		<form action="{{ action('TutorController@store') }}" method="POST">
 			@csrf
 			<div class="form-group row">
+				<label for="id_tutor" class="col-sm-2 col-form-label">ID TUTOR</label>
+				<div class="col-md-10">
+					<input  required type="number" id="id_tutor" class="form-control" name="id_tutor">
+				</div>
+			</div>
+			<div class="form-group row">
 				<label for="nip" class="col-sm-2 col-form-label">NIP</label>
 				<div class="col-md-10">
 					<input  required type="number" id="nip" class="form-control hitung" name="nip">

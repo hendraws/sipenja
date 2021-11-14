@@ -250,6 +250,7 @@ class JadwalController extends Controller
     {
     	// dd($request);
     	$jadwal = $request->validate([
+    		'id_tutorial' => 'required',
     		'jadwal_id' => 'required',
     		'jurusan_id' => 'required',
     		'kelas_id' => 'required',

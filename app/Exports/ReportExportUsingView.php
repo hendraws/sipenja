@@ -33,17 +33,16 @@ class ReportExportUsingView implements FromView, ShouldAutoSize,WithStyles,Shoul
                 ->when(request()->filled('masa') && request()->masa != 'null' , fn($q) =>
                     $q->Where('tahun_ajaran', request()->masa)
                 )
-                ->when(request()->filled('matakuliah') && request()->masa != 'null', fn($q) =>
+                ->when(request()->filled('matakuliah') && request()->matakuliah != 'null', fn($q) =>
                     $q->Where('mata_kuliahs.id', request()->matakuliah)
                 )
                 ->when(request()->filled('nim') && request()->nim != 'null', fn($q) =>
-                    $q->Where('mahasiswa.nim', request()->nim)
+                    $q->Where('mahasiswas.nim', request()->nim)
                 )
                 ->when(request()->filled('lokasi') && request()->lokasi != 'null', fn($q) =>
                     $q->Where('lokasi_tutorials.id', request()->lokasi)
                 )
                 ->get();
-
                 return view('admin.report.export', compact('report'));
 	}
 

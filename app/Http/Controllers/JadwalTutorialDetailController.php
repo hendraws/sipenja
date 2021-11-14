@@ -63,6 +63,7 @@ class JadwalTutorialDetailController extends Controller
     public function store(Request $request)
     {
     	$jadwal = $request->validate([
+    		'id_tutorial' => 'required',
     		'jadwal_id' => 'required',
     		'jurusan_id' => 'required',
     		'kelas_id' => 'required',
@@ -163,6 +164,7 @@ class JadwalTutorialDetailController extends Controller
     {
 
         $jadwal = $request->validate([
+    		'id_tutorial' => 'required',
     		'jadwal_id' => 'required',
     		'jurusan_id' => 'required',
     		'kelas_id' => 'required',

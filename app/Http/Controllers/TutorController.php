@@ -75,7 +75,7 @@ class TutorController extends Controller
     		})   	
     		->addColumn('action', function ($row) {
     			$action =  '<a class="btn btn-xs btn-info" href="'.action('TutorController@show',$row).'"  data-toggle="tooltip" data-placement="top" title="Pendidikan Tutor" style="width:100%">Pendidikan Tutor</a>';
-    			$action = $action.  '<a class="btn btn-xs btn-success modal-button" href="Javascript:void(0)"  data-target="ModalForm" data-url="'.action('TutorController@evaluasi',$row).'"  data-toggle="tooltip" data-placement="top" title="Hapus" style="width:100%">Evaluasi</a>';
+    			$action = $action.  '<a class="btn btn-xs btn-success modal-button" href="Javascript:void(0)"  data-target="ModalForm" data-url="'.action('TutorController@evaluasi',$row).'"  data-toggle="tooltip" data-placement="top" title="Evaluasi Tutor" style="width:100%">Evaluasi</a>';
     			$action = $action.  '<a class="btn btn-xs btn-warning" href="'.action('TutorController@edit',$row).'"  data-toggle="tooltip" data-placement="top" title="Edit" style="width:100%">Edit</a>';
     			$action = $action.  '<a class="btn btn-xs btn-danger modal-button" href="Javascript:void(0)"  data-target="ModalForm" data-url="'.action('TutorController@delete',$row).'"  data-toggle="tooltip" data-placement="top" title="Hapus" style="width:100%">Hapus</a>';
     			return $action;
@@ -106,6 +106,7 @@ class TutorController extends Controller
     public function store(Request $request)
     {
     	$tutorial = $request->validate([
+    		'id_tutor' => 'required',
     		'nip' => 'required',
     		'nama' => 'required',
     		'tanggal_lahir' => 'required',
@@ -167,6 +168,7 @@ class TutorController extends Controller
     public function update(Request $request, Tutor $tutor)
     {
     	$tutorial = $request->validate([
+    		'id_tutor' => 'required',
     		'nip' => 'required',
     		'nama' => 'required',
     		'tanggal_lahir' => 'required',

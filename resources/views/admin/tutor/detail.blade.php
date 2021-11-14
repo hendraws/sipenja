@@ -18,6 +18,12 @@
 		<div class="row">
 			<div class="col-6">
 				<div class="row">
+					<div class="col-4">ID TUTOR</div>
+					<div class="col-8">: {{ $tutor->id_tutor }}</div>
+				</div>
+			</div>
+			<div class="col-6">
+				<div class="row">
 					<div class="col-4">NIP</div>
 					<div class="col-8">: {{ $tutor->nip }}</div>
 				</div>

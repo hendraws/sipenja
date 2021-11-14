@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class JadwalTutorial extends Model
 {
-	protected $fillable = [ 'jadwal_id', 'jurusan_id', 'kelas_id', 'kelompok_id', 'link', 'keterangan', 'created_by', 'updated_by' ];
+	protected $fillable = [ 'id_tutorial','jadwal_id', 'jurusan_id', 'kelas_id', 'kelompok_id', 'link', 'keterangan', 'created_by', 'updated_by' ];
 
 	public function getKelompok(){
 		return $this->belongsTo(LokasiTutorial::class, 'kelompok_id', 'id');

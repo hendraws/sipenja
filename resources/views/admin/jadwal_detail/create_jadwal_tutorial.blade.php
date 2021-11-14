@@ -67,6 +67,12 @@
 		<form action="{{ action('JadwalTutorialDetailController@store') }}" method="POST">
 			@csrf
 			<div class="form-group row">
+				<label for="id_tutorial" class="col-sm-2 col-form-label">ID Tutorial</label>
+				<div class="col-md-10">
+					<input  required type="text" id="id_tutorial" class="form-control" name="id_tutorial">
+				</div>
+			</div>
+			<div class="form-group row">
 				<label for="jurusan_id" class="col-sm-2 col-form-label">Jurusan</label>
 				<div class="col-md-10">
 					<select class="form-control select" name="jurusan_id" required id="jurusan_id">

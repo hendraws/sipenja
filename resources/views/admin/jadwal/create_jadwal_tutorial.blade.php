@@ -65,7 +65,13 @@
 		<form action="{{ action('JadwalController@storeJadwalTutorial') }}" method="POST">
 			@csrf
 			<div class="form-group row">
-				<label for="jurusan_id" class="col-sm-2 col-form-label">Jurusan</label>
+				<label for="link" class="col-sm-2 col-form-label">ID Jadwal</label>
+				<div class="col-md-10">
+					<input  required type="text" id="link" class="form-control" name="link">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="jurusan_id" class="col-sm-2 col-form-label">Jfurusan</label>
 				<div class="col-md-10">
 					<select class="form-control select" name="jurusan_id" required id="jurusan_id">
 						<option disabled selected>Pilih Jurusan</option>

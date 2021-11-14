@@ -21,7 +21,7 @@ class ReportController extends Controller
                 ->join('jadwal_tutorial_details', 'jadwal_tutorial_details.id', 'mahasiswa_jadwal_details.jadwal_tutorial_detail_id')
                 ->join('mata_kuliahs', 'mata_kuliahs.id', 'jadwal_tutorial_details.matakuliah_id')
                 ->join('jadwal_tutorials', 'jadwal_tutorials.id', 'jadwal_tutorial_details.jadwal_tutorial_id')
-                ->join('tutors', 'tutors.id', 'jadwal_tutorial_details.jadwal_tutorial_id')
+                ->join('tutors', 'tutors.id', 'jadwal_tutorial_details.tutor_id')
                 ->join('kelas', 'kelas.id', 'jadwal_tutorials.kelas_id')
                 ->join('mahasiswa_jadwals', 'mahasiswa_jadwals.id', 'mahasiswa_jadwal_details.mahasiswa_jadwal_id')
                 ->join('mahasiswas', 'mahasiswas.nim', 'mahasiswa_jadwals.nim')
@@ -32,7 +32,7 @@ class ReportController extends Controller
                 ->when(request()->filled('masa') && request()->masa != 'null' , fn($q) =>
                     $q->Where('tahun_ajaran', request()->masa)
                 )
-                ->when(request()->filled('matakuliah') && request()->masa != 'matakuliah', fn($q) =>
+                ->when(request()->filled('matakuliah') && request()->matakuliah != 'null', fn($q) =>
                     $q->Where('mata_kuliahs.id', request()->matakuliah)
                 )
                 ->when(request()->filled('nim') && request()->nim != 'null', fn($q) =>
@@ -41,7 +41,9 @@ class ReportController extends Controller
                 ->when(request()->filled('lokasi') && request()->lokasi != 'null', fn($q) =>
                     $q->Where('lokasi_tutorials.id', request()->lokasi)
                 )
-                ->get();
+           		->paginate(100);
+           		// dd($report);
+	    		// ->withQueryString();
             return view('admin.report.table', compact('report'));
         }
 
