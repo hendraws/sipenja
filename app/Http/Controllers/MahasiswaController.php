@@ -279,9 +279,11 @@ class MahasiswaController extends Controller
     	$jadwal = Jadwal::where('is_aktif', 'Y')->first();
     	$cek = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)
     	->where('mahasiswa_jadwal_id', $mahasiswa->id)
+        ->where('is_deleted', 'N')
     	->pluck('number', 'jadwal_tutorial_detail_id')->toArray();
     	$cekAll = MahasiswaJadwalDetail::where('jadwal_id', $jadwal->id)->where('nim', auth()->user()->nik_npm)
     	->where('mahasiswa_jadwal_id',"!=" , $mahasiswa->id)
+        ->where('is_deleted', 'N')
     	->pluck('number')->toArray();
 
     	$paket = JadwalTutorial::where('id', $mahasiswa->jadwal_tutorial_id)->first();
@@ -302,25 +304,32 @@ class MahasiswaController extends Controller
 
     public function updateJadwal(Request $request, MahasiswaJadwal $mahasiswa)
     {
-    	dd($request, $mahasiswa);
-    	DB::beginTransaction();
+        DB::beginTransaction();
     	try {
-    		if($request->has('jadwal_tutorial_detail_id')){
-    			if($request->has('jadwal_sekarang')){
-	    			// MahasiswaJadwalDetail::where('jadwal_tutorial_id',$mahasiswa )
+            $nim = auth()->user()->nik_npm;
+            if($request->has('jadwal_tutorial_detail_id')){
+                if($request->has('jadwal_sekarang')){
+                    $mhsdetail = MahasiswaJadwalDetail::whereIn('jadwal_tutorial_detail_id', $request->jadwal_sekarang )->delete();
     			}
-    			
-    		}
 
-    		$mahasiswa->update([
-    			'jadwal_tutorial_id' => $request->lokasi
-    		]);
-
-    		foreach ($request->jadwal_tutorial_detail_id as $key => $value) {
-    			MahasiswaJadwalDetail::where('id', $key)->update([
-    				'jadwal_tutorial_detail_id' => $value,
-    			]);
-    		}
+                foreach ($request->jadwal_tutorial_detail_id as $key => $value) {
+                    $nim = auth()->user()->nik_npm;
+                    $jadwal = JadwalTutorialDetail::where('id', $value)->first();
+                    MahasiswaJadwalDetail::create([
+                        'nim' => $nim,
+                        'mahasiswa_jadwal_id' => $mahasiswa->id,
+                        'jadwal_id' => $jadwal->jadwal_id,
+                        'jadwal_tutorial_id' => $jadwal->jadwal_tutorial_id,
+                        'jadwal_tutorial_detail_id' => $jadwal->id,
+                        'number' => $jadwal->number,
+                        'waktu'=> $jadwal->waktu,
+                        'matakuliah_id'=> $jadwal->matakuliah_id,
+                    ]);
+                }
+    		}else{
+                toastr()->error('harus pilih salah satu matakuliah', 'Error');
+                return back();
+            }
 
     	} catch (\Exception $e) {
     		DB::rollback();
@@ -334,7 +343,7 @@ class MahasiswaController extends Controller
 
     	DB::commit();
     	toastr()->success('Data telah diubah', 'Berhasil');
-    	return redirect(action('HomeController@mahasiswaIndex'));
+    	return redirect(action('HomeController@index'));
     }
 
     public function destroyJadwal($id)
@@ -344,6 +353,10 @@ class MahasiswaController extends Controller
     		MahasiswaJadwal::where('id',$id)->update([
     			'status' => 'non aktif'
     		]);
+
+            MahasiswaJadwalDetail::where('mahasiswa_jadwal_id', $id)->update([
+                'is_deleted' => 'Y'
+            ]);
     	} catch (\Exception $e) {
     		DB::rollback();
     		toastr()->error($e->getMessage(), 'Error');

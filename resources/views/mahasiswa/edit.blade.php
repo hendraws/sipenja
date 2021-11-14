@@ -48,7 +48,7 @@
 					@endforeach
 
 					@foreach($cek as $k => $v)
-					<input type="hidden" name="jadwalSekarang[{{ $k }}]" value="{{ $k }}">
+					<input type="hidden" name="jadwal_sekarang[{{ $k }}]" value="{{ $k }}">
 					@endforeach
 				</tbody>
 			</table>

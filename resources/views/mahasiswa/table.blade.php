@@ -16,13 +16,13 @@
 				<td>{{ $val->nim }}</td>
 				<td>{{ optional($val->getMahasiswa)->nama }}</td>
 				<td>{{ $val->status }}</td>
-				@if($val->status == 'aktif')
 				<td>
-					<a class="btn btn-xs btn-success modal-button" href="Javascript:void(0)"  data-target="ModalForm" data-url="{{ action('MahasiswaController@showJadwal',$val) }}"  data-toggle="tooltip" data-placement="top" title="Detail" style="width:32%">Detail</a>
+                    <a class="btn btn-xs btn-success modal-button" href="Javascript:void(0)"  data-target="ModalForm" data-url="{{ action('MahasiswaController@showJadwal',$val) }}"  data-toggle="tooltip" data-placement="top" title="Detail" style="width:32%">Detail</a>
+                    @if($val->status == 'aktif')
 					<a class="btn btn-xs btn-warning modal-button" href="Javascript:void(0)"  data-target="ModalForm" data-url="{{ action('MahasiswaController@editJadwal',$val) }}"  data-mode="lg" data-toggle="tooltip" data-placement="top" title="Edit" style="width:32%">Edit</a>
 					<button type="button" class="btn btn-danger btn-xs hapus" data-id="{{ $val->id }}" style="width:32%">Hapus</button>
+                    @endif
 				</td>
-				@endif
 			</tr>
 			@endforeach
 		</tbody>
